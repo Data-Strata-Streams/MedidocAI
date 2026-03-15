@@ -1,0 +1,17 @@
+# Environments
+medidoc/
+venv/
+__pycache__/
+*.pyc
+
+# Secrets and Configs
+.env
+config/*.json
+
+# Data and Logs
+data/vectors/
+*.log
+data/others/*.log
+
+# OS generated files
+.DS_Store

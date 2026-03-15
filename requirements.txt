@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+google-cloud-aiplatform
+qdrant-client
+python-dotenv
+requests
+python-multipart
+pydantic
+pyyaml
+google-cloud-texttospeech
