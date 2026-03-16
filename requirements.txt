@@ -1,10 +1,13 @@
 fastapi
 uvicorn
 google-cloud-aiplatform
+google-auth>=2.23.3
 qdrant-client
 python-dotenv
 requests
 python-multipart
 pydantic
 pyyaml
+jinja2
 google-cloud-texttospeech
+markdown2

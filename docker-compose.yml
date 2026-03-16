@@ -1,8 +1,19 @@
-# Purpose: Define Qdrant Vector DB container (and future Medidoc services) without interfering with the existing Evolution API.
-
 version: '3.8'
 
 services:
+  medidoc_api:
+    build: .
+    container_name: medidoc_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - qdrant
+    restart: always
+
   qdrant:
     image: qdrant/qdrant:latest
     container_name: medidoc_qdrant
@@ -11,4 +22,4 @@ services:
       - "6334:6334"
     volumes:
       - ./data/vectors:/qdrant/storage
-    restart: unless-stopped
+    restart: always
