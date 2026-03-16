@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-10">
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-md">
+        <h1 class="text-3xl font-bold mb-6 text-blue-800">{{ title }}</h1>
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="p-3 border">Brand</th>
+                    <th class="p-3 border">Manufacturer</th>
+                    <th class="p-3 border">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    {% if type == 'generic' %}
+                        {% for brand in item.local_brands %}
+                        <tr class="border-b">
+                            <td class="p-3">
+                                <a class="text-blue-700 hover:underline font-semibold" href="/medicine/{{ brand.brand_name|urlencode }}">{{ brand.brand_name }}</a>
+                            </td>
+                            <td class="p-3">
+                                {% if brand.manufacturer %}
+                                    <a class="text-blue-700 hover:underline font-semibold" href="/manufacturer/{{ brand.manufacturer|urlencode }}">{{ brand.manufacturer }}</a>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td class="p-3">{{ brand.price }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr class="border-b">
+                            <td class="p-3">
+                                <a class="text-blue-700 hover:underline font-semibold" href="/medicine/{{ item.brand.brand_name|urlencode }}">{{ item.brand.brand_name }}</a>
+                                {% if item.generic %}
+                                    <span class="text-slate-500">
+                                        (
+                                        <a class="text-blue-700 hover:underline font-semibold" href="/generic/{{ item.generic|urlencode }}">{{ item.generic }}</a>
+                                        )
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="p-3">
+                                {% if item.brand.manufacturer %}
+                                    <a class="text-blue-700 hover:underline font-semibold" href="/manufacturer/{{ item.brand.manufacturer|urlencode }}">{{ item.brand.manufacturer }}</a>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td class="p-3">{{ item.brand.price }}</td>
+                        </tr>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

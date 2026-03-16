@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ brand_name }}{% if generic_name %} — {{ generic_name }}{% endif %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen p-6 md:p-10">
+    <div class="max-w-5xl mx-auto">
+        <div class="mb-6">
+            <a href="/" class="inline-flex items-center text-sm font-semibold text-blue-700 hover:text-blue-900">← Back to home</a>
+        </div>
+
+        <div class="bg-white border border-slate-100 shadow-sm rounded-2xl p-6 md:p-8">
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">{{ brand_name }}</h1>
+            {% if generic_name %}
+                <p class="text-slate-600 mt-2">
+                    Generic:
+                    <a class="font-bold text-blue-700 hover:underline" href="/generic/{{ generic_name|urlencode }}">{{ generic_name }}</a>
+                </p>
+            {% endif %}
+
+            <div class="mt-8">
+                <h2 class="text-lg font-extrabold text-slate-900 mb-3">Available packs / variants</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-3 border">Formula</th>
+                                <th class="p-3 border">Manufacturer</th>
+                                <th class="p-3 border">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for m in matches %}
+                                <tr class="border-b">
+                                    <td class="p-3">{{ m.brand.exact_formula or '—' }}</td>
+                                    <td class="p-3">
+                                        {% if m.brand.manufacturer %}
+                                            <a class="text-blue-700 hover:underline font-semibold" href="/manufacturer/{{ m.brand.manufacturer|urlencode }}">{{ m.brand.manufacturer }}</a>
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+                                    <td class="p-3">{{ m.brand.price or '—' }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {% if clinical_profile %}
+                <div class="mt-10 grid grid-cols-1 gap-6">
+                    {% if clinical_profile.unified_indications %}
+                        <div>
+                            <h2 class="text-lg font-extrabold text-slate-900 mb-2">Indications</h2>
+                            <p class="text-slate-700 leading-relaxed">{{ clinical_profile.unified_indications }}</p>
+                        </div>
+                    {% endif %}
+                    {% if clinical_profile.unified_mechanism %}
+                        <div>
+                            <h2 class="text-lg font-extrabold text-slate-900 mb-2">Mechanism</h2>
+                            <p class="text-slate-700 leading-relaxed">{{ clinical_profile.unified_mechanism }}</p>
+                        </div>
+                    {% endif %}
+                    {% if clinical_profile.unified_side_effects %}
+                        <div>
+                            <h2 class="text-lg font-extrabold text-slate-900 mb-2">Side effects</h2>
+                            <p class="text-slate-700 leading-relaxed">{{ clinical_profile.unified_side_effects }}</p>
+                        </div>
+                    {% endif %}
+                    {% if clinical_profile.unified_warnings_and_precautions %}
+                        <div>
+                            <h2 class="text-lg font-extrabold text-slate-900 mb-2">Warnings & precautions</h2>
+                            <p class="text-slate-700 leading-relaxed">{{ clinical_profile.unified_warnings_and_precautions }}</p>
+                        </div>
+                    {% endif %}
+                    {% if clinical_profile.unified_contraindications %}
+                        <div>
+                            <h2 class="text-lg font-extrabold text-slate-900 mb-2">Contraindications</h2>
+                            <p class="text-slate-700 leading-relaxed">{{ clinical_profile.unified_contraindications }}</p>
+                        </div>
+                    {% endif %}
+                    {% if clinical_profile.unified_dosage_guidelines %}
+                        <div>
+                            <h2 class="text-lg font-extrabold text-slate-900 mb-2">Dosage guidelines</h2>
+                            <p class="text-slate-700 leading-relaxed">{{ clinical_profile.unified_dosage_guidelines }}</p>
+                        </div>
+                    {% endif %}
+                    {% if clinical_profile.black_box_warning and clinical_profile.black_box_warning != 'None' %}
+                        <div class="rounded-xl border border-red-200 bg-red-50 p-4">
+                            <h2 class="text-lg font-extrabold text-red-900 mb-2">Black box warning</h2>
+                            <p class="text-red-900 leading-relaxed">{{ clinical_profile.black_box_warning }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,10 +1,14 @@
-# Purpose: Main FastAPI application entry point. Handles incoming HTTP requests, orchestrates retrieval, and includes WhatsApp webhook routes.
+# Purpose: Main FastAPI application entry point. Handles AI core APIs and cleanly routes to external WhatsApp and Web modules.
+
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from engine.core.retrieval import search_medicine
 from engine.core.generator import generate_response
-from engine.others.whatsapp_webhook import whatsapp_router  # Import the new webhook router
+from engine.others.whatsapp_webhook import whatsapp_router
+from Web.Engine.Core.web_router import web_app_router  # Import the new Web router
 
 app = FastAPI(
     title="MedidocAI API",
@@ -12,13 +16,19 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Include the WhatsApp webhook router
+# Static assets (blog images, etc.)
+_MEDIDOC_ROOT = Path(__file__).resolve().parents[1]
+_IMAGES_DIR = _MEDIDOC_ROOT / "Web" / "Pages" / "images"
+app.mount("/images", StaticFiles(directory=str(_IMAGES_DIR)), name="images")
+
+# Include external routers cleanly
 app.include_router(whatsapp_router)
+app.include_router(web_app_router)
 
 # Define the request payload structure
 class QueryRequest(BaseModel):
     query: str
-    persona: str = "General Public"  # Default persona
+    persona: str = "General Public"
 
 # Define the response payload structure
 class QueryResponse(BaseModel):
@@ -26,12 +36,9 @@ class QueryResponse(BaseModel):
     persona: str
     response: str
 
+# Pure AI Engine Text API endpoint
 @app.post("/api/v1/query", response_model=QueryResponse)
 async def process_query(request: QueryRequest):
-    """
-    Receives a text query, retrieves relevant medical context from Qdrant,
-    and generates a persona-specific response using Gemini 2.5 Flash.
-    """
     try:
         retrieved_context = search_medicine(request.query)
         ai_response = generate_response(
@@ -47,7 +54,7 @@ async def process_query(request: QueryRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
+# Health check
 @app.get("/health")
 async def health_check():
-    """Simple health check endpoint."""
     return {"status": "healthy", "service": "MedidocAI Engine"}
