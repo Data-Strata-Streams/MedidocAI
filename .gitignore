@@ -17,3 +17,5 @@ data/others/*.log
 .DS_Store
 *.tar.gz
 *.zip
+medidocai_backup_2026-03-16.tar.gz
+*.tar.gz
