@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  medidoc_api_staging:
+    build: .
+    container_name: medidoc_api_staging
+    ports:
+      - "8001:8000"
+    volumes:
+      - .:/app
+      # This line tells the container: use the 'data_staging' folder instead of the live 'data' folder
+      - ./Web/Pages/Blog/data_staging:/app/Web/Pages/Blog/data
+    env_file:
+      - .env
+    restart: unless-stopped

@@ -15,4 +15,14 @@ class Config:
     EVOLUTION_API_KEY = os.getenv("EVOLUTION_API_KEY")
     EVOLUTION_INSTANCE_NAME = os.getenv("EVOLUTION_INSTANCE_NAME")
 
+    # Database Settings (PostgreSQL)
+    DB_USER = os.getenv("POSTGRES_USER", "medidoc_admin")
+    DB_PASSWORD = os.getenv("POSTGRES_PASSWORD", "secure_medidoc_pass_123")
+    DB_NAME = os.getenv("POSTGRES_DB", "medidoc_db")
+    DB_HOST = os.getenv("POSTGRES_HOST", "db")  # 'db' matches the docker-compose service name
+    DB_PORT = os.getenv("POSTGRES_PORT", "5432")
+    
+    # Constructed Database URL for SQLAlchemy (Async)
+    DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
 settings = Config()

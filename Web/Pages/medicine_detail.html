@@ -1,103 +1,145 @@
+<!-- Purpose: Mobile-Optimized Medicine Detail Page with Responsive Grid and Typography -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ brand_name }}{% if generic_name %} — {{ generic_name }}{% endif %}</title>
+    
+    <!-- DYNAMIC SEO TITLE -->
+    <title>{{ brand_name }} ({{ generic_name }}): Uses, Dosage & Side Effects | MedidocAI</title>
+    
+    <!-- DYNAMIC SEO DESCRIPTION -->
+    <meta name="description" content="Find comprehensive medical details for {{ brand_name }} ({{ generic_name }}). Learn about its uses, side effects, clinical warnings, and AI-verified generic alternatives.">
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes bounce-short { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+        .animate-bounce-short { animation: bounce-short 2s ease-in-out infinite; }
+        /* Smooth scrolling for anchor links */
+        html { scroll-behavior: smooth; }
+    </style>
 </head>
-<body class="bg-gray-50 min-h-screen p-6 md:p-10">
-    <div class="max-w-5xl mx-auto">
-        <div class="mb-6">
-            <a href="/" class="inline-flex items-center text-sm font-semibold text-blue-700 hover:text-blue-900">← Back to home</a>
+<body class="bg-gray-50 min-h-screen md:p-8 pb-24 font-sans text-gray-800">
+
+    <!-- MAIN CONTAINER: Full width on mobile, Centered Card on Desktop -->
+    <div class="w-full max-w-5xl mx-auto bg-white md:rounded-2xl shadow-sm border-x-0 md:border border-gray-100 overflow-hidden">
+        
+        <!-- HEADER SECTION -->
+        <div class="bg-blue-600 px-6 py-8 md:px-10 md:py-10 text-white relative overflow-hidden">
+            <!-- Background Decoration -->
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
+            
+            <a href="/" class="inline-flex items-center text-blue-100 hover:text-white font-semibold mb-6 transition group">
+                <i class="fa-solid fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i> Back to Search
+            </a>
+            
+            <h1 class="text-3xl md:text-5xl font-extrabold mb-3 tracking-tight">{{ brand_name }}</h1>
+            
+            <div class="flex flex-wrap items-center gap-2 text-blue-100 text-sm md:text-base">
+                <span class="opacity-80">Generic Formula:</span>
+                <a href="/generic/{{ generic_name | urlencode }}" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full font-semibold text-white transition backdrop-blur-md border border-white/20">
+                    {{ generic_name }}
+                </a>
+            </div>
         </div>
 
-        <div class="bg-white border border-slate-100 shadow-sm rounded-2xl p-6 md:p-8">
-            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">{{ brand_name }}</h1>
-            {% if generic_name %}
-                <p class="text-slate-600 mt-2">
-                    Generic:
-                    <a class="font-bold text-blue-700 hover:underline" href="/generic/{{ generic_name|urlencode }}">{{ generic_name }}</a>
-                </p>
+        <!-- CONTENT BODY -->
+        <div class="px-6 py-8 md:px-10">
+            
+            <!-- CLINICAL PROFILE SECTION (If Available) -->
+            {% if clinical_profile %}
+            <div class="mb-12">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-file-medical-alt"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900">Clinical Profile</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 gap-6 bg-slate-50 rounded-2xl p-6 border border-slate-100">
+                    <div class="space-y-2">
+                        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Indications (Uses)</h3>
+                        <p class="text-gray-800 leading-relaxed">{{ clinical_profile.unified_indications }}</p>
+                    </div>
+                    
+                    <div class="border-t border-slate-200 my-2"></div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Mechanism</h3>
+                            <p class="text-gray-800 text-sm leading-relaxed">{{ clinical_profile.unified_mechanism }}</p>
+                        </div>
+                        <div class="space-y-2">
+                            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Common Dosage</h3>
+                            <p class="text-gray-800 text-sm leading-relaxed">{{ clinical_profile.unified_dosage_guidelines }}</p>
+                        </div>
+                    </div>
+
+                    {% if clinical_profile.unified_side_effects %}
+                    <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg mt-2">
+                        <h3 class="text-red-800 font-bold text-sm mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Potential Side Effects
+                        </h3>
+                        <p class="text-red-700 text-sm">{{ clinical_profile.unified_side_effects }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
             {% endif %}
 
-            <div class="mt-8">
-                <h2 class="text-lg font-extrabold text-slate-900 mb-3">Available packs / variants</h2>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                <th class="p-3 border">Formula</th>
-                                <th class="p-3 border">Manufacturer</th>
-                                <th class="p-3 border">Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for m in matches %}
-                                <tr class="border-b">
-                                    <td class="p-3">{{ m.brand.exact_formula or '—' }}</td>
-                                    <td class="p-3">
-                                        {% if m.brand.manufacturer %}
-                                            <a class="text-blue-700 hover:underline font-semibold" href="/manufacturer/{{ m.brand.manufacturer|urlencode }}">{{ m.brand.manufacturer }}</a>
-                                        {% else %}
-                                            —
-                                        {% endif %}
-                                    </td>
-                                    <td class="p-3">{{ m.brand.price or '—' }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+            <!-- AVAILABLE BRANDS SECTION -->
+            <div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-pills"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900">Available Brands / Manufacturers</h2>
+                </div>
+
+                <!-- RESPONSIVE GRID: 1 Col Mobile, 2 Cols Desktop -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for m in matches %}
+                    <div class="group p-5 bg-white rounded-xl border border-gray-200 hover:border-blue-400 hover:shadow-md transition duration-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <p class="font-bold text-lg text-gray-900 group-hover:text-blue-700 transition">{{ m.brand.brand_name }}</p>
+                                <span class="bg-gray-100 text-gray-500 text-[10px] px-2 py-1 rounded uppercase font-bold tracking-wide">Brand</span>
+                            </div>
+                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1.5">
+                                <i class="fa-solid fa-industry text-xs"></i>
+                                <a href="/manufacturer/{{ m.brand.manufacturer | urlencode }}" class="hover:text-blue-600 hover:underline transition">
+                                    {{ m.brand.manufacturer }}
+                                </a>
+                            </p>
+                        </div>
+                        <div class="pt-3 border-t border-gray-50 mt-2">
+                            <p class="text-xs text-gray-400 font-mono">{{ m.brand.exact_formula }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
 
-            {% if clinical_profile %}
-                <div class="mt-10 grid grid-cols-1 gap-6">
-                    {% if clinical_profile.unified_indications %}
-                        <div>
-                            <h2 class="text-lg font-extrabold text-slate-900 mb-2">Indications</h2>
-                            <p class="text-slate-700 leading-relaxed">{{ clinical_profile.unified_indications }}</p>
-                        </div>
-                    {% endif %}
-                    {% if clinical_profile.unified_mechanism %}
-                        <div>
-                            <h2 class="text-lg font-extrabold text-slate-900 mb-2">Mechanism</h2>
-                            <p class="text-slate-700 leading-relaxed">{{ clinical_profile.unified_mechanism }}</p>
-                        </div>
-                    {% endif %}
-                    {% if clinical_profile.unified_side_effects %}
-                        <div>
-                            <h2 class="text-lg font-extrabold text-slate-900 mb-2">Side effects</h2>
-                            <p class="text-slate-700 leading-relaxed">{{ clinical_profile.unified_side_effects }}</p>
-                        </div>
-                    {% endif %}
-                    {% if clinical_profile.unified_warnings_and_precautions %}
-                        <div>
-                            <h2 class="text-lg font-extrabold text-slate-900 mb-2">Warnings & precautions</h2>
-                            <p class="text-slate-700 leading-relaxed">{{ clinical_profile.unified_warnings_and_precautions }}</p>
-                        </div>
-                    {% endif %}
-                    {% if clinical_profile.unified_contraindications %}
-                        <div>
-                            <h2 class="text-lg font-extrabold text-slate-900 mb-2">Contraindications</h2>
-                            <p class="text-slate-700 leading-relaxed">{{ clinical_profile.unified_contraindications }}</p>
-                        </div>
-                    {% endif %}
-                    {% if clinical_profile.unified_dosage_guidelines %}
-                        <div>
-                            <h2 class="text-lg font-extrabold text-slate-900 mb-2">Dosage guidelines</h2>
-                            <p class="text-slate-700 leading-relaxed">{{ clinical_profile.unified_dosage_guidelines }}</p>
-                        </div>
-                    {% endif %}
-                    {% if clinical_profile.black_box_warning and clinical_profile.black_box_warning != 'None' %}
-                        <div class="rounded-xl border border-red-200 bg-red-50 p-4">
-                            <h2 class="text-lg font-extrabold text-red-900 mb-2">Black box warning</h2>
-                            <p class="text-red-900 leading-relaxed">{{ clinical_profile.black_box_warning }}</p>
-                        </div>
-                    {% endif %}
-                </div>
-            {% endif %}
         </div>
     </div>
+
+    <!-- ACCURACY BUBBLE (Mobile: Fixed Bottom Width | Desktop: Fixed Bottom Right) -->
+    <div id="accuracy-disclaimer" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:w-80 bg-white border border-gray-200 p-4 rounded-2xl shadow-2xl z-50 animate-bounce-short">
+        <button onclick="document.getElementById('accuracy-disclaimer').remove()" class="absolute -top-3 -right-3 bg-gray-800 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm shadow-md hover:bg-gray-600 transition cursor-pointer">✕</button>
+        <div class="flex items-start gap-3">
+            <div class="bg-amber-100 text-amber-600 p-2.5 rounded-xl shrink-0"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="text-xs leading-relaxed text-gray-600">
+                <p class="font-bold text-gray-900 mb-1">AI Accuracy Note</p>
+                Found an error? Help us improve:
+                <div class="flex gap-3 mt-2 font-bold">
+                    <a href="mailto:admin@medidocai.com" class="text-blue-600 hover:underline">Email Us</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="https://wa.link/kl71v0" target="_blank" class="text-green-600 hover:underline">WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

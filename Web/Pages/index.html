@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedidocAI - Medical Intelligence for Pakistan</title>
+    <title>MedidocAI - AI-Simplified Medicinal Intelligence for All</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -21,107 +21,151 @@
             background: #cbd5e1;
             border-radius: 10px;
         }
+
+        /* Mobile Menu Transition */
+        #mobile-menu {
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+
+        #mobile-menu.open {
+            max-height: 500px;
+            opacity: 1;
+        }
     </style>
 </head>
 
-<body class="min-h-screen flex flex-col relative">
+<body class="min-h-screen flex flex-col relative overflow-x-hidden">
 
     <!-- TOP NAVBAR -->
-    <nav
-        class="flex items-center justify-between px-8 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-gray-100">
-        <div class="flex items-center space-x-2 text-blue-700 font-extrabold text-2xl tracking-tight">
-            <i class="fa-solid fa-stethoscope text-2xl"></i>
-            <span>MEDIDOC<span class="text-gray-900">AI</span></span>
-        </div>
-
-        <!-- Navbar Links -->
-        <div class="hidden md:flex items-center space-x-8 text-sm font-semibold text-slate-600 relative z-50">
-
-            <!-- BULLETPROOF TAILWIND HOVER DROPDOWN -->
-            <div class="group relative py-4 -my-4 cursor-pointer">
-                <div class="flex items-center gap-1.5 group-hover:text-blue-600 transition duration-300">
-                    Clinical Directories <i
-                        class="fa-solid fa-chevron-down text-[10px] group-hover:rotate-180 transition-transform duration-300"></i>
-                </div>
-
-                <!-- Dropdown Wrapper with Integrated Internal Links -->
-                <div
-                    class="absolute left-0 top-full pt-4 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                    <div
-                        class="bg-white border border-gray-100 shadow-xl rounded-xl flex flex-col py-2 relative z-50 pointer-events-auto">
-                        <a href="/rx-pill-identifier"
-                            class="px-5 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition text-sm font-medium border-b border-gray-50">Rx
-                            & Pill Identifier</a>
-                        <a href="/generic-browse"
-                            class="px-5 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition text-sm font-medium border-b border-gray-50">Generic
-                            Alternatives & Pricing</a>
-                        <a href="/generic-browse"
-                            class="px-5 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition text-sm font-medium border-b border-gray-50">Active
-                            Ingredients (Formula) Search</a>
-                        <a href="/manufacturer-browse"
-                            class="px-5 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition text-sm font-medium">Pharmaceutical
-                            Companies Index</a>
-                    </div>
-                </div>
+    <nav class="flex flex-col px-6 py-4 bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
+        <div class="flex items-center justify-between w-full">
+            <!-- LOGO -->
+            <div class="flex items-center space-x-2 text-blue-700 font-extrabold text-2xl tracking-tight shrink-0">
+                <i class="fa-solid fa-stethoscope text-2xl"></i>
+                <a href="/">MEDIDOC<span class="text-gray-900">AI</span></a>
             </div>
 
-            <!-- Blog Link -->
-            <a href="/Blog/index.html" class="hover:text-blue-600 transition">Blogs</a>
+            <!-- DESKTOP MENU (Hidden on Mobile) -->
+            <div class="hidden md:flex items-center space-x-8 text-sm font-semibold text-slate-600">
+                <div class="group relative py-4 -my-4 cursor-pointer">
+                    <div class="flex items-center gap-1.5 group-hover:text-blue-600 transition duration-300">
+                        Clinical Directories <i
+                            class="fa-solid fa-chevron-down text-[10px] group-hover:rotate-180 transition-transform duration-300"></i>
+                    </div>
+                    <!-- Desktop Dropdown -->
+                    <div
+                        class="absolute left-0 top-full pt-4 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                        <div
+                            class="bg-white border border-gray-100 shadow-xl rounded-xl flex flex-col py-2 relative z-50 pointer-events-auto">
+                            <a href="/rx-pill-identifier"
+                                class="px-5 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition text-sm font-medium border-b border-gray-50">Rx
+                                & Pill Identifier</a>
+                            <a href="/generic-browse"
+                                class="px-5 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition text-sm font-medium border-b border-gray-50">Generic
+                                Alternatives & Pricing</a>
+                            <a href="/generic-browse"
+                                class="px-5 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition text-sm font-medium border-b border-gray-50">Active
+                                Ingredients (Formula) Search</a>
+                            <a href="/manufacturer-browse"
+                                class="px-5 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition text-sm font-medium">Pharmaceutical
+                                Companies Index</a>
+                        </div>
+                    </div>
+                </div>
+                <a href="/blog" class="hover:text-blue-600 transition">Blogs</a>
+                <a href="https://wa.link/kl71v0" target="_blank"
+                    class="flex items-center gap-1.5 text-green-600 hover:text-green-700 transition font-bold">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Talk to AI on WhatsApp
+                </a>
+            </div>
 
-            <!-- WhatsApp Link -->
-            <a href="https://wa.link/kl71v0" target="_blank"
-                class="flex items-center gap-1.5 text-green-600 hover:text-green-700 transition font-bold">
-                <i class="fa-brands fa-whatsapp text-lg"></i> Talk to AI on WhatsApp
-            </a>
+            <!-- CONTROLS & HAMBURGER (Visible on Mobile) -->
+            <div class="flex items-center gap-3">
+                <div class="hidden md:flex items-center space-x-4">
+                    <select
+                        class="bg-gray-100 text-slate-700 font-medium text-sm px-4 py-2.5 rounded-full outline-none cursor-pointer border border-transparent hover:border-gray-200 transition">
+                        <option>English</option>
+                        <option>Urdu</option>
+                    </select>
+                    <button
+                        class="border-[1.5px] border-blue-600 text-blue-600 font-bold text-sm px-6 py-2 rounded-full hover:bg-blue-50 transition">PORTAL
+                        LOGIN</button>
+                </div>
+                <!-- Hamburger Button (Mobile Only) -->
+                <button onclick="toggleMobileMenu()" class="md:hidden text-slate-700 text-2xl focus:outline-none p-2">
+                    <i class="fa-solid fa-bars" id="menu-icon"></i>
+                </button>
+            </div>
         </div>
 
-        <div class="flex items-center space-x-4">
-            <select
-                class="bg-gray-100 text-slate-700 font-medium text-sm px-4 py-2.5 rounded-full outline-none cursor-pointer border border-transparent hover:border-gray-200 transition">
-                <option>English</option>
-                <option>Urdu</option>
-            </select>
-            <button
-                class="border-[1.5px] border-blue-600 text-blue-600 font-bold text-sm px-6 py-2 rounded-full hover:bg-blue-50 transition">
-                PORTAL LOGIN
-            </button>
+        <!-- MOBILE MENU DRAWER (Hidden by default) -->
+        <div id="mobile-menu" class="md:hidden flex flex-col space-y-4 pt-4 border-t border-gray-100 mt-4">
+            <div class="flex flex-col space-y-3 px-2">
+                <button onclick="toggleMobileDropdown()"
+                    class="flex justify-between items-center text-slate-700 font-semibold text-lg w-full py-2">
+                    Clinical Directories <i class="fa-solid fa-chevron-down text-xs transition-transform"
+                        id="mobile-chevron"></i>
+                </button>
+                <div id="mobile-dropdown"
+                    class="hidden flex-col space-y-2 pl-4 text-slate-600 text-base border-l-2 border-blue-100 ml-1">
+                    <a href="/rx-pill-identifier" class="block py-2 hover:text-blue-600">Rx & Pill Identifier</a>
+                    <a href="/generic-browse" class="block py-2 hover:text-blue-600">Generic Alternatives</a>
+                    <a href="/generic-browse" class="block py-2 hover:text-blue-600">Formula Search</a>
+                    <a href="/manufacturer-browse" class="block py-2 hover:text-blue-600">Pharma Companies</a>
+                </div>
+                <a href="/blog" class="text-slate-700 font-semibold text-lg py-2">Blogs</a>
+                <a href="https://wa.link/kl71v0" target="_blank"
+                    class="text-green-600 font-bold text-lg flex items-center gap-2 py-2">
+                    <i class="fa-brands fa-whatsapp"></i> Talk to AI on WhatsApp
+                </a>
+                <div class="h-px bg-gray-100 my-2"></div>
+                <div class="flex items-center justify-between pt-2">
+                    <select class="bg-gray-100 text-slate-700 font-medium text-sm px-4 py-2 rounded-lg outline-none">
+                        <option>English</option>
+                        <option>Urdu</option>
+                    </select>
+                    <button
+                        class="border border-blue-600 text-blue-600 font-bold text-sm px-6 py-2 rounded-lg">LOGIN</button>
+                </div>
+            </div>
         </div>
     </nav>
 
     <!-- MAIN CONTENT HERO SECTION -->
-    <main class="flex-grow flex flex-col items-center pt-16 px-4 pb-20 relative z-10">
+    <main class="flex-grow flex flex-col items-center pt-10 md:pt-16 px-4 pb-20 relative z-10">
 
-        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 text-center mb-6 tracking-tight">
-            Medical Intelligence for <span class="text-green-600">Pakistan</span>
+        <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 text-center mb-6 tracking-tight leading-tight">
+            AI-Simplified Medicinal Intelligence for <span class="text-blue-600">All</span>
         </h1>
 
-        <div class="flex flex-wrap justify-center gap-3 mb-10" id="searchPills">
+        <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-10" id="searchPills">
             <button onclick="updateSearchType(this, 'Search for medicine brand names (e.g., Panadol)...')"
-                class="search-pill bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-medium shadow-md transition duration-300 cursor-pointer">Medicine/Market
+                class="search-pill bg-blue-600 text-white px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-sm font-medium shadow-md transition duration-300 cursor-pointer">Medicine/Market
                 Name</button>
             <button onclick="updateSearchType(this, 'Search for generic formulas (e.g., Paracetamol)...')"
-                class="search-pill bg-white text-gray-500 border border-gray-200 hover:border-blue-400 hover:text-blue-600 px-5 py-2 rounded-full text-sm font-medium transition duration-300 cursor-pointer">Generic/Salt/Formula</button>
+                class="search-pill bg-white text-gray-500 border border-gray-200 hover:border-blue-400 hover:text-blue-600 px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-sm font-medium transition duration-300 cursor-pointer">Generic/Salt/Formula</button>
             <button onclick="updateSearchType(this, 'Search by pharmaceutical company...')"
-                class="search-pill bg-white text-gray-500 border border-gray-200 hover:border-blue-400 hover:text-blue-600 px-5 py-2 rounded-full text-sm font-medium transition duration-300 cursor-pointer">Manufacturer/Company</button>
+                class="search-pill bg-white text-gray-500 border border-gray-200 hover:border-blue-400 hover:text-blue-600 px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-sm font-medium transition duration-300 cursor-pointer">Manufacturer/Company</button>
         </div>
 
-        <!-- Unified Search connecting to Gemini AI in same tab -->
+        <!-- Unified Search -->
         <div
-            class="w-full max-w-2xl shadow-xl rounded-full bg-white flex items-center p-1 border border-gray-100 mb-20 hover:shadow-2xl transition duration-300 relative z-20">
-            <i class="fa-solid fa-search text-gray-400 pl-6 pr-2"></i>
+            class="w-full max-w-2xl shadow-xl rounded-full bg-white flex items-center p-1 border border-gray-100 mb-12 md:mb-20 hover:shadow-2xl transition duration-300 relative z-20">
+            <i class="fa-solid fa-search text-gray-400 pl-4 md:pl-6 pr-2"></i>
             <input type="text" id="mainSearchInput" placeholder="Search for medicine brand names (e.g., Panadol)..."
-                class="w-full py-4 text-gray-700 outline-none bg-transparent transition-all duration-300"
+                class="w-full py-3 md:py-4 text-sm md:text-base text-gray-700 outline-none bg-transparent transition-all duration-300"
                 onkeypress="if(event.key === 'Enter') triggerMainSearch()">
             <button onclick="triggerMainSearch()"
-                class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3.5 rounded-full transition duration-300 ml-2 cursor-pointer">
-                SEARCH
-            </button>
+                class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 md:px-8 py-2.5 md:py-3.5 rounded-full transition duration-300 ml-2 cursor-pointer text-sm md:text-base">SEARCH</button>
         </div>
 
         <!-- PERSONA CARDS -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl relative z-10 pointer-events-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 w-full max-w-5xl relative z-10 pointer-events-auto">
             <div
-                class="group bg-white p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start hover:-translate-y-2 hover:shadow-2xl transition duration-300">
+                class="group bg-white p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start">
                 <div
                     class="bg-blue-50 text-blue-600 w-12 h-12 flex items-center justify-center rounded-xl mb-6 text-xl group-hover:bg-blue-100 transition">
                     <i class="fa-solid fa-user-group"></i>
@@ -130,12 +174,11 @@
                 <p class="text-gray-500 text-sm leading-relaxed mb-8 flex-grow">Check medicine safety, side effects, and
                     find affordable generic alternatives.</p>
                 <button onclick="openModal('General Public')"
-                    class="w-full bg-gray-50 text-gray-800 font-semibold py-3 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition duration-300 cursor-pointer pointer-events-auto">
-                    Open Public Portal
-                </button>
+                    class="w-full bg-gray-50 text-gray-800 font-semibold py-3 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition duration-300 cursor-pointer pointer-events-auto">Open
+                    Public Portal</button>
             </div>
             <div
-                class="group bg-white p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start hover:-translate-y-2 hover:shadow-2xl transition duration-300">
+                class="group bg-white p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start">
                 <div
                     class="bg-teal-50 text-teal-600 w-12 h-12 flex items-center justify-center rounded-xl mb-6 text-xl group-hover:bg-teal-100 transition">
                     <i class="fa-solid fa-graduation-cap"></i>
@@ -144,12 +187,11 @@
                 <p class="text-gray-500 text-sm leading-relaxed mb-8 flex-grow">Research pharmaceutical trends, MOA, and
                     deep pharmacological data.</p>
                 <button onclick="openModal('Students')"
-                    class="w-full bg-gray-50 text-gray-800 font-semibold py-3 rounded-xl group-hover:bg-teal-600 group-hover:text-white transition duration-300 cursor-pointer pointer-events-auto">
-                    Enter Research Lab
-                </button>
+                    class="w-full bg-gray-50 text-gray-800 font-semibold py-3 rounded-xl group-hover:bg-teal-600 group-hover:text-white transition duration-300 cursor-pointer pointer-events-auto">Enter
+                    Research Lab</button>
             </div>
             <div
-                class="group bg-white p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start hover:-translate-y-2 hover:shadow-2xl transition duration-300">
+                class="group bg-white p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col items-start">
                 <div
                     class="bg-indigo-50 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-xl mb-6 text-xl group-hover:bg-indigo-100 transition">
                     <i class="fa-solid fa-user-doctor"></i>
@@ -158,106 +200,88 @@
                 <p class="text-gray-500 text-sm leading-relaxed mb-8 flex-grow">Instant clinical access to the full
                     registration database and guidelines.</p>
                 <button onclick="openModal('HCP')"
-                    class="w-full bg-gray-50 text-gray-800 font-semibold py-3 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition duration-300 cursor-pointer pointer-events-auto">
-                    Access HCP Portal
-                </button>
+                    class="w-full bg-gray-50 text-gray-800 font-semibold py-3 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition duration-300 cursor-pointer pointer-events-auto">Access
+                    HCP Portal</button>
             </div>
         </div>
     </main>
 
-    <!-- DARK FOOTER SECTION -->
+    <!-- FOOTER -->
     <footer class="bg-[#0f172a] text-slate-400 py-12 px-6 flex flex-col items-center text-center mt-auto relative z-10">
         <div
-            class="flex flex-wrap justify-center items-center gap-x-4 gap-y-2 text-xs md:text-sm font-semibold tracking-wide text-slate-300 mb-6">
-            <a href="/about-us" class="hover:text-white transition">ABOUT US</a>
-            <span class="text-slate-600">|</span>
-            <a href="/contact-us" class="hover:text-white transition">CONTACT US</a>
-            <span class="text-slate-600">|</span>
-            <a href="/terms-of-service" class="hover:text-white transition">TERMS OF SERVICE</a>
-            <span class="text-slate-600">|</span>
-            <a href="/privacy-policy" class="hover:text-white transition">PRIVACY POLICY</a>
-            <span class="text-slate-600">|</span>
-            <a href="/medical-disclaimer" class="hover:text-white transition flex items-center gap-1.5">
-                <i class="fa-regular fa-circle-question"></i> MEDICAL DISCLAIMER
-            </a>
+            class="flex flex-wrap justify-center items-center gap-x-4 gap-y-3 text-xs md:text-sm font-semibold tracking-wide text-slate-300 mb-6">
+            <a href="/about-us" class="hover:text-white transition">ABOUT US</a> |
+            <a href="/contact-us" class="hover:text-white transition">CONTACT US</a> |
+            <a href="/terms-of-service" class="hover:text-white transition">TERMS OF SERVICE</a> |
+            <a href="/privacy-policy" class="hover:text-white transition">PRIVACY POLICY</a> |
+            <a href="/medical-disclaimer" class="hover:text-white transition flex items-center gap-1.5"><i
+                    class="fa-regular fa-circle-question"></i> MEDICAL DISCLAIMER</a>
         </div>
         <p class="max-w-3xl text-xs leading-relaxed text-slate-500 mb-8 px-4">
             MediDoc AI is designed for informational purposes only. It is not a substitute for professional medical
-            advice, diagnosis, or treatment. Our AI intelligence is strictly vetted but should always be consulted with
-            a registered Healthcare Professional in Pakistan.
+            advice. Always consult a registered Healthcare Professional.
         </p>
-        <p class="text-[10px] font-bold tracking-widest text-slate-600 uppercase">
-            &copy; 2026 MEDIDOC AI. ALL RIGHTS RESERVED.
-        </p>
+        <p class="text-[10px] font-bold tracking-widest text-slate-600 uppercase">&copy; 2026 MEDIDOC AI. ALL RIGHTS
+            RESERVED.</p>
     </footer>
 
-    <!-- FLOATING WHATSAPP BUTTON -->
+    <!-- FLOATING WHATSAPP -->
     <a href="https://wa.link/kl71v0" target="_blank"
-        class="fixed bottom-8 right-8 bg-[#25D366] hover:bg-[#1ebe57] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-[0_4px_14px_rgba(37,211,102,0.4)] hover:scale-110 transition-transform duration-300 z-30 pointer-events-auto">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
+        class="fixed bottom-6 right-6 md:bottom-8 md:right-8 bg-[#25D366] hover:bg-[#1ebe57] text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-xl hover:scale-110 transition-transform duration-300 z-30 pointer-events-auto"><i
+            class="fa-brands fa-whatsapp"></i></a>
 
-    <!-- IN-TAB CHAT MODAL OVERLAY -->
+    <!-- CHAT MODAL (Enhanced for Mobile) -->
     <div id="chatModalOverlay"
-        class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[100] hidden items-end md:items-center justify-center p-0 md:p-4">
         <div id="chatBox"
-            class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-300 pointer-events-auto"
-            style="height: 75vh;">
+            class="bg-white w-full md:max-w-3xl rounded-t-2xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-300 pointer-events-auto h-[90dvh] md:h-[75vh]">
 
             <div id="chatHeader"
-                class="text-white px-6 py-4 flex justify-between items-center z-10 shrink-0 transition-colors duration-300">
-                <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-robot text-xl"></i>
-                    <h2 id="chatTitle" class="font-bold text-lg">MedidocAI Assistant</h2>
+                class="text-white px-4 md:px-6 py-3 md:py-4 flex justify-between items-center z-10 shrink-0 transition-colors duration-300">
+                <div class="flex items-center space-x-3"><i class="fa-solid fa-robot text-lg md:text-xl"></i>
+                    <h2 id="chatTitle" class="font-bold text-base md:text-lg">MedidocAI Assistant</h2>
                 </div>
                 <div class="flex space-x-4">
-                    <button onclick="toggleMaximize()" class="hover:text-blue-200" title="Maximize"><i
+                    <button onclick="toggleMaximize()" class="hover:text-blue-200 hidden md:block" title="Maximize"><i
                             class="fa-solid fa-expand"></i></button>
-                    <!-- Close button brought back -->
                     <button onclick="closeModal()" class="hover:text-red-200" title="Close Chat"><i
                             class="fa-solid fa-xmark text-xl"></i></button>
                 </div>
             </div>
 
-            <div id="chatMessages" class="flex-grow p-6 overflow-y-auto chat-scroll bg-gray-50 space-y-4"></div>
+            <div id="chatMessages" class="flex-grow p-4 md:p-6 overflow-y-auto chat-scroll bg-gray-50 space-y-4"></div>
 
-            <!-- Sticky Medical Disclaimer Above the Input -->
+            <!-- Sticky Medical Disclaimer (PRESERVED) -->
             <div class="bg-white px-4 pt-3 border-t border-gray-100 shrink-0 flex justify-center w-full">
                 <div id="disclaimerFull"
                     class="bg-yellow-50 border border-yellow-200 border-l-4 border-l-yellow-400 p-3 rounded-lg flex justify-between items-start w-full">
                     <div class="flex items-start space-x-3">
                         <i class="fa-solid fa-triangle-exclamation text-yellow-600 mt-0.5"></i>
-                        <p class="text-xs text-yellow-800 leading-relaxed">
-                            <strong class="font-bold">Disclaimer:</strong> For educational purposes only. MedidocAI does
-                            not replace professional medical advice. Always consult a certified physician.
-                        </p>
+                        <p class="text-[10px] md:text-xs text-yellow-800 leading-relaxed"><strong
+                                class="font-bold">Disclaimer:</strong> MedidocAI does not replace medical advice.</p>
                     </div>
-                    <button onclick="minimizeDisclaimer()" class="text-yellow-600 hover:text-yellow-800 ml-2">
-                        <i class="fa-solid fa-compress text-sm" title="Minimize"></i>
-                    </button>
+                    <button onclick="minimizeDisclaimer()" class="text-yellow-600 hover:text-yellow-800 ml-2"><i
+                            class="fa-solid fa-compress text-sm" title="Minimize"></i></button>
                 </div>
                 <div id="disclaimerMinimized" style="display: none;" class="w-full flex justify-center pb-1">
                     <button onclick="expandDisclaimer()"
-                        class="bg-yellow-100 hover:bg-yellow-200 border border-yellow-300 text-yellow-800 px-4 py-1.5 rounded-full shadow flex items-center space-x-2 transition">
-                        <i class="fa-solid fa-triangle-exclamation text-xs"></i>
-                        <span class="text-xs font-bold tracking-wide">Medical Disclaimer</span>
-                    </button>
+                        class="bg-yellow-100 hover:bg-yellow-200 border border-yellow-300 text-yellow-800 px-4 py-1.5 rounded-full shadow flex items-center space-x-2 transition"><i
+                            class="fa-solid fa-triangle-exclamation text-xs"></i><span
+                            class="text-xs font-bold tracking-wide">Medical Disclaimer</span></button>
                 </div>
             </div>
 
-            <div class="p-4 bg-white shrink-0 w-full">
+            <div class="p-3 md:p-4 bg-white shrink-0 w-full safe-area-pb">
                 <form id="chatForm" onsubmit="handleSend(event)"
                     class="flex items-center space-x-2 bg-gray-100 p-2 rounded-full border border-gray-200">
-                    <label class="cursor-pointer text-gray-400 hover:text-blue-600 px-3">
-                        <i class="fa-solid fa-paperclip"></i>
-                        <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="previewFile()">
-                    </label>
+                    <label class="cursor-pointer text-gray-400 hover:text-blue-600 px-2 md:px-3"><i
+                            class="fa-solid fa-paperclip"></i><input type="file" id="imageInput" accept="image/*"
+                            class="hidden" onchange="previewFile()"></label>
                     <input type="text" id="chatInput" placeholder="Type your message..."
-                        class="flex-grow bg-transparent outline-none text-gray-700 px-2">
+                        class="flex-grow bg-transparent outline-none text-gray-700 px-2 text-sm md:text-base">
                     <button type="submit" id="sendBtn"
-                        class="text-white rounded-full w-10 h-10 flex items-center justify-center transition">
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </button>
+                        class="text-white rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center transition"><i
+                            class="fa-solid fa-paper-plane text-xs md:text-sm"></i></button>
                 </form>
                 <div id="filePreview" class="text-xs text-blue-600 font-semibold px-4 pt-2 hidden"></div>
             </div>
@@ -265,19 +289,34 @@
     </div>
 
     <script>
+        // MOBILE MENU LOGIC
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            menu.classList.toggle('open');
+            if (menu.classList.contains('open')) { icon.classList.replace('fa-bars', 'fa-xmark'); }
+            else { icon.classList.replace('fa-xmark', 'fa-bars'); }
+        }
+
+        function toggleMobileDropdown() {
+            const dropdown = document.getElementById('mobile-dropdown');
+            const chevron = document.getElementById('mobile-chevron');
+            dropdown.classList.toggle('hidden');
+            dropdown.classList.toggle('flex');
+            chevron.style.transform = dropdown.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+
+        // --- PRESERVED EXISTING JS ---
         let currentPersona = "General Public";
         let isMaximized = false;
-
         const modalOverlay = document.getElementById('chatModalOverlay');
         const chatBox = document.getElementById('chatBox');
-
         const personaConfig = {
             "General Public": { welcome: "Hello! I am your friendly AI Assistant. Ask me about medicine prices, dosages, or cheaper alternatives!", colorClass: "bg-blue-600" },
             "Students": { welcome: "Welcome to the Research Lab. Ask me for Mechanism of Action (MOA) and detailed pharmacological profiles.", colorClass: "bg-teal-600" },
             "HCP": { welcome: "HCP Portal Initialized. Ask for clinical guidelines, contraindications, and black-box warnings.", colorClass: "bg-indigo-600" }
         };
 
-        // Search Bar visual toggle
         function updateSearchType(clickedBtn, placeholderText) {
             document.querySelectorAll('.search-pill').forEach(btn => { btn.className = "search-pill bg-white text-gray-500 border border-gray-200 hover:border-blue-400 hover:text-blue-600 px-5 py-2 rounded-full text-sm font-medium transition duration-300 cursor-pointer"; });
             clickedBtn.className = "search-pill bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-medium shadow-md transition duration-300 cursor-pointer";
@@ -285,128 +324,59 @@
             document.getElementById('mainSearchInput').focus();
         }
 
-        // Disclaimer Toggles
-        function minimizeDisclaimer() {
-            document.getElementById('disclaimerFull').style.display = "none";
-            document.getElementById('disclaimerMinimized').style.display = "flex";
-        }
-        function expandDisclaimer() {
-            document.getElementById('disclaimerMinimized').style.display = "none";
-            document.getElementById('disclaimerFull').style.display = "flex";
-        }
+        function minimizeDisclaimer() { document.getElementById('disclaimerFull').style.display = "none"; document.getElementById('disclaimerMinimized').style.display = "flex"; }
+        function expandDisclaimer() { document.getElementById('disclaimerMinimized').style.display = "none"; document.getElementById('disclaimerFull').style.display = "flex"; }
+        function closeModal() { modalOverlay.classList.add("hidden"); modalOverlay.classList.remove("flex"); }
 
-        // Close Chat
-        function closeModal() {
-            modalOverlay.classList.add("hidden");
-            modalOverlay.classList.remove("flex");
-        }
-
-        // Maximize Chat
         function toggleMaximize() {
             isMaximized = !isMaximized;
-            if (isMaximized) {
-                chatBox.style.height = "95vh";
-                chatBox.classList.replace("max-w-3xl", "max-w-6xl");
-            } else {
-                chatBox.style.height = "75vh";
-                chatBox.classList.replace("max-w-6xl", "max-w-3xl");
-            }
+            if (isMaximized) { chatBox.style.height = "95vh"; chatBox.classList.replace("max-w-3xl", "max-w-6xl"); }
+            else { chatBox.style.height = "75vh"; chatBox.classList.replace("max-w-6xl", "max-w-3xl"); }
         }
 
-        // Opens the in-tab modal
         function openModal(persona, query = '') {
             currentPersona = persona;
             document.getElementById('chatTitle').innerText = `MedidocAI - ${persona} Mode`;
-            document.getElementById('chatHeader').className = `text-white px-6 py-4 flex justify-between items-center z-10 shrink-0 transition-colors duration-300 ${personaConfig[persona].colorClass}`;
-            document.getElementById('sendBtn').className = `text-white rounded-full w-10 h-10 flex items-center justify-center transition duration-300 hover:brightness-110 ${personaConfig[persona].colorClass}`;
-
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.innerHTML = "";
+            document.getElementById('chatHeader').className = `text-white px-4 md:px-6 py-3 md:py-4 flex justify-between items-center z-10 shrink-0 transition-colors duration-300 ${personaConfig[persona].colorClass}`;
+            document.getElementById('sendBtn').className = `text-white rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center transition duration-300 hover:brightness-110 ${personaConfig[persona].colorClass}`;
+            const chatMessages = document.getElementById('chatMessages'); chatMessages.innerHTML = "";
             appendMessage("bot", personaConfig[persona].welcome);
-
-            // Show modal
-            modalOverlay.classList.remove("hidden");
-            modalOverlay.classList.add("flex");
-
+            modalOverlay.classList.remove("hidden"); modalOverlay.classList.add("flex");
             const chatInput = document.getElementById('chatInput');
-            chatInput.focus();
-
-            // If triggered from Search bar, auto-send
-            if (query) {
-                chatInput.value = query;
-                handleSend(new Event('submit'));
-            }
+            // Prevent auto-focus on mobile to avoid keyboard popup
+            if (window.innerWidth > 768) chatInput.focus();
+            if (query) { chatInput.value = query; handleSend(new Event('submit')); }
         }
 
-        // Forward Main Search input into the Modal Chat
-        function triggerMainSearch() {
-            const query = document.getElementById('mainSearchInput').value;
-            if (!query.trim()) return;
-            openModal("General Public", query);
-            document.getElementById('mainSearchInput').value = "";
-        }
+        function triggerMainSearch() { const query = document.getElementById('mainSearchInput').value; if (!query.trim()) return; openModal("General Public", query); document.getElementById('mainSearchInput').value = ""; }
+        function previewFile() { const imageInput = document.getElementById('imageInput'); const filePreview = document.getElementById('filePreview'); if (imageInput.files.length > 0) { filePreview.innerText = `📎 Attached: ${imageInput.files[0].name}`; filePreview.classList.remove("hidden"); } }
 
-        // File Attachment Preview
-        function previewFile() {
-            const imageInput = document.getElementById('imageInput');
-            const filePreview = document.getElementById('filePreview');
-            if (imageInput.files.length > 0) {
-                filePreview.innerText = `📎 Attached: ${imageInput.files[0].name}`;
-                filePreview.classList.remove("hidden");
-            }
-        }
-
-        // Append Message Utility
         function appendMessage(sender, text) {
-            const chatMessages = document.getElementById('chatMessages');
-            const msgDiv = document.createElement("div");
+            const chatMessages = document.getElementById('chatMessages'); const msgDiv = document.createElement("div");
             msgDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
             const bubble = document.createElement("div");
-            bubble.className = `max-w-[85%] rounded-2xl px-5 py-3 text-sm shadow-sm ${sender === 'user' ? 'bg-blue-600 text-white rounded-br-none' : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none'}`;
+            bubble.className = `max-w-[85%] rounded-2xl px-4 py-2 md:px-5 md:py-3 text-sm shadow-sm ${sender === 'user' ? 'bg-blue-600 text-white rounded-br-none' : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none'}`;
             bubble.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
-            msgDiv.appendChild(bubble);
-            chatMessages.appendChild(msgDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            msgDiv.appendChild(bubble); chatMessages.appendChild(msgDiv); chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // AI Submission handler
         async function handleSend(e) {
             if (e) e.preventDefault();
-            const chatInput = document.getElementById('chatInput');
-            const imageInput = document.getElementById('imageInput');
-            const chatMessages = document.getElementById('chatMessages');
-            const filePreview = document.getElementById('filePreview');
-
-            const text = chatInput.value.trim();
-            const file = imageInput.files[0];
+            const chatInput = document.getElementById('chatInput'); const imageInput = document.getElementById('imageInput'); const chatMessages = document.getElementById('chatMessages'); const filePreview = document.getElementById('filePreview');
+            const text = chatInput.value.trim(); const file = imageInput.files[0];
             if (!text && !file) return;
-
-            if (text) appendMessage("user", text);
-            if (file) appendMessage("user", `📷 [Image Uploaded: ${file.name}]`);
-
-            chatInput.value = "";
-            imageInput.value = "";
-            filePreview.classList.add("hidden");
-
+            if (text) appendMessage("user", text); if (file) appendMessage("user", `📷 [Image Uploaded: ${file.name}]`);
+            chatInput.value = ""; imageInput.value = ""; filePreview.classList.add("hidden");
             appendMessage("bot", '<i class="fa-solid fa-circle-notch fa-spin text-gray-400"></i> Analyzing...');
             const thinkingBubble = chatMessages.lastChild;
-
             const formData = new FormData();
-            if (text) formData.append("text", text);
-            if (file) formData.append("image", file);
-            formData.append("persona", currentPersona);
-            formData.append("reply_type", "text");
-
+            if (text) formData.append("text", text); if (file) formData.append("image", file); formData.append("persona", currentPersona); formData.append("reply_type", "text");
             try {
                 const response = await fetch("/web/chat", { method: "POST", body: formData });
                 const data = await response.json();
                 chatMessages.removeChild(thinkingBubble);
-                if (data.text) { appendMessage("bot", data.text); }
-                else { appendMessage("bot", "Sorry, I received an empty response."); }
-            } catch (error) {
-                chatMessages.removeChild(thinkingBubble);
-                appendMessage("bot", "❌ Failed to connect to the server. Please try again.");
-            }
+                if (data.text) { appendMessage("bot", data.text); } else { appendMessage("bot", "Sorry, I received an empty response."); }
+            } catch (error) { chatMessages.removeChild(thinkingBubble); appendMessage("bot", "❌ Failed to connect to the server. Please try again."); }
         }
     </script>
 </body>

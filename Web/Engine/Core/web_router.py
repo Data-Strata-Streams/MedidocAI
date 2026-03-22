@@ -1,11 +1,12 @@
+# Purpose: Web router updated to support modern FastAPI/Starlette TemplateResponse signature.
 import os
 import json
 import base64
+from urllib.parse import unquote
 from fastapi import APIRouter, Request, Form, UploadFile, File, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse, Response
 from fastapi.templating import Jinja2Templates
 
-# Import existing AI engine functions
 from engine.core.retrieval import search_medicine
 from engine.core.generator import generate_response
 from engine.core.audio_handler import transcribe_audio
@@ -14,29 +15,34 @@ from engine.core.tts_handler import generate_audio_base64
 from engine.core.fallback import get_generic_from_ai, log_missing_medicine
 
 web_app_router = APIRouter()
-templates = Jinja2Templates(directory="Web/Pages")
+# Fix: Ensure absolute pathing for Docker compatibility
+BASE_DIR = os.getcwd() 
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "Web/Pages"))
 
-# --- DATA HELPERS ---
+# --- DEFENSIVE DATA HELPERS ---
 def get_all_data():
-    with open("data/processed/medicine_database.json", "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open("data/processed/medicine_database.json", "r", encoding="utf-8") as f:
+            return json.load(f)
+    except: return []
 
 def get_by_generic(generic_name):
     data = get_all_data()
-    return [item for item in data if item["generic_name"].lower() == generic_name.lower()]
+    return [item for item in data if item.get("generic_name") and item["generic_name"].lower() == generic_name.lower()]
 
 def get_by_manufacturer(manufacturer_name):
     data = get_all_data()
     results = []
+    target = manufacturer_name.lower()
     for item in data:
-        for brand in item.get("local_brands", []):
-            if not isinstance(brand, dict):
-                continue
-            m = brand.get("manufacturer")
-            if not isinstance(m, str) or not m:
-                continue
-            if m.lower() == manufacturer_name.lower():
-                results.append({"brand": brand, "generic": item.get("generic_name")})
+        brands = item.get("local_brands", [])
+        if not isinstance(brands, list): continue
+        for brand in brands:
+            if isinstance(brand, dict):
+                m_name = brand.get("manufacturer")
+                # Ensure manufacturer is a string before calling .lower()
+                if isinstance(m_name, str) and m_name.lower() == target:
+                    results.append({"brand": brand, "generic": item.get("generic_name")})
     return results
 
 def get_unique_generics():
@@ -48,34 +54,26 @@ def get_unique_manufacturers():
     manufacturers = set()
     for item in data:
         for brand in item.get("local_brands", []):
-            if brand.get("manufacturer"):
-                manufacturers.add(brand["manufacturer"])
+            m = brand.get("manufacturer")
+            if isinstance(m, str):
+                manufacturers.add(m)
     return sorted(list(manufacturers))
 
 def get_by_brand_name(brand_name: str):
     data = get_all_data()
     results = []
-    if not isinstance(brand_name, str) or not brand_name:
-        return results
-    wanted = brand_name.lower()
+    if not brand_name: return results
+    wanted = unquote(brand_name).replace("-", " ").lower()
     for item in data:
-        local_brands = item.get("local_brands", [])
-        if not isinstance(local_brands, list):
-            continue
-        for brand in local_brands:
-            if not isinstance(brand, dict):
-                continue
-            bn = brand.get("brand_name")
-            if not isinstance(bn, str) or not bn:
-                continue
-            if bn.lower() == wanted:
-                results.append(
-                    {
+        for brand in item.get("local_brands", []):
+            if isinstance(brand, dict):
+                bn = brand.get("brand_name", "")
+                if isinstance(bn, str) and bn.lower() == wanted:
+                    results.append({
                         "brand": brand,
                         "generic_name": item.get("generic_name"),
                         "clinical_profile": item.get("clinical_profile"),
-                    }
-                )
+                    })
     return results
 
 def get_all_blogs():
@@ -89,87 +87,84 @@ def get_all_blogs():
 # --- ROUTES ---
 @web_app_router.get("/", response_class=HTMLResponse)
 async def serve_homepage(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="index.html", context={"request": request})
 
-# Static Pages
 @web_app_router.get("/medical-disclaimer", response_class=HTMLResponse)
 async def serve_disclaimer(request: Request):
-    return templates.TemplateResponse("disclaimer.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="disclaimer.html", context={"request": request})
 
 @web_app_router.get("/privacy-policy", response_class=HTMLResponse)
 async def serve_privacy(request: Request):
-    return templates.TemplateResponse("privacy.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="privacy.html", context={"request": request})
 
 @web_app_router.get("/terms-of-service", response_class=HTMLResponse)
 async def serve_terms(request: Request):
-    return templates.TemplateResponse("terms.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="terms.html", context={"request": request})
 
 @web_app_router.get("/about-us", response_class=HTMLResponse)
 async def serve_about(request: Request):
-    return templates.TemplateResponse("about.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="about.html", context={"request": request})
 
 @web_app_router.get("/contact-us", response_class=HTMLResponse)
 async def serve_contact(request: Request):
-    return templates.TemplateResponse("contact.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="contact.html", context={"request": request})
 
 @web_app_router.get("/rx-pill-identifier", response_class=HTMLResponse)
 async def serve_rx_pill_identifier(request: Request):
-    return templates.TemplateResponse(
-        "coming_soon.html",
-        {
-            "request": request,
-            "title": "Rx & Pill Identifier",
-            "subtitle": "Coming Soon!",
-        },
-    )
+    return templates.TemplateResponse(request=request, name="coming_soon.html", context={"request": request, "title": "Rx & Pill Identifier", "subtitle": "Coming Soon!"})
+
+# SEO ROUTES
+@web_app_router.get("/robots.txt")
+async def serve_robots():
+    content = "User-agent: *\nDisallow:\nSitemap: https://www.medidocai.com/sitemap.xml"
+    return Response(content=content, media_type="text/plain")
+
+@web_app_router.get("/sitemap.xml")
+async def serve_sitemap(request: Request):
+    base_url = "https://www.medidocai.com"
+    all_posts = get_all_blogs()
+    xml_content = '<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    
+    # Adding sitemaps
+    sitemaps = ["sitemap-medicines.xml", "sitemap-generics.xml", "sitemap-manufacturers.xml"]
+    for sitemap in sitemaps:
+        xml_content += f'  <sitemap><loc>{base_url}/{sitemap}</loc></sitemap>\n'
+    xml_content += f'  <sitemap><loc>{base_url}/sitemap-pages.xml</loc></sitemap>\n'
+    xml_content += '</sitemapindex>'
+    return Response(content=xml_content, media_type="application/xml")
 
 # Browse Routes
 @web_app_router.get("/generic-browse", response_class=HTMLResponse)
 async def serve_generic_browse(request: Request):
-    return templates.TemplateResponse("browse.html", {"request": request, "items": get_unique_generics(), "title": "Browse by Generic Formula", "type": "generic"})
+    return templates.TemplateResponse(request=request, name="browse.html", context={"request": request, "items": get_unique_generics(), "title": "Browse by Generic Formula", "type": "generic"})
 
 @web_app_router.get("/manufacturer-browse", response_class=HTMLResponse)
 async def serve_manufacturer_browse(request: Request):
-    return templates.TemplateResponse("browse.html", {"request": request, "items": get_unique_manufacturers(), "title": "Browse by Manufacturer", "type": "manufacturer"})
+    return templates.TemplateResponse(request=request, name="browse.html", context={"request": request, "items": get_unique_manufacturers(), "title": "Browse by Manufacturer", "type": "manufacturer"})
 
 @web_app_router.get("/generic/{name}", response_class=HTMLResponse)
 async def serve_generic_page(request: Request, name: str):
-    items = get_by_generic(name)
-    return templates.TemplateResponse("list_view.html", {"request": request, "title": f"Medicines: {name}", "items": items, "type": "generic"})
+    return templates.TemplateResponse(request=request, name="list_view.html", context={"request": request, "title": f"Medicines: {name}", "items": get_by_generic(name), "type": "generic"})
 
 @web_app_router.get("/manufacturer/{name}", response_class=HTMLResponse)
 async def serve_manufacturer_page(request: Request, name: str):
-    items = get_by_manufacturer(name)
-    return templates.TemplateResponse("list_view.html", {"request": request, "title": f"Manufacturer: {name}", "items": items, "type": "manufacturer"})
+    return templates.TemplateResponse(request=request, name="list_view.html", context={"request": request, "title": f"Manufacturer: {name}", "items": get_by_manufacturer(name), "type": "manufacturer"})
 
 @web_app_router.get("/medicine/{brand_name}", response_class=HTMLResponse)
 async def serve_medicine_detail(request: Request, brand_name: str):
     matches = get_by_brand_name(brand_name)
-    if not matches:
-        raise HTTPException(status_code=404, detail="Medicine not found")
-    generic_name = next((m.get("generic_name") for m in matches if m.get("generic_name")), None)
-    clinical_profile = next((m.get("clinical_profile") for m in matches if isinstance(m.get("clinical_profile"), dict)), None)
-    return templates.TemplateResponse(
-        "medicine_detail.html",
-        {
-            "request": request,
-            "brand_name": brand_name,
-            "generic_name": generic_name,
-            "matches": matches,
-            "clinical_profile": clinical_profile,
-        },
-    )
+    if not matches: raise HTTPException(status_code=404, detail="Medicine not found")
+    return templates.TemplateResponse(request=request, name="medicine_detail.html", context={"request": request, "brand_name": brand_name, "generic_name": next((m.get("generic_name") for m in matches), None), "matches": matches, "clinical_profile": next((m.get("clinical_profile") for m in matches if isinstance(m.get("clinical_profile"), dict)), None)})
 
-# Blog Routes
 @web_app_router.get("/blog", response_class=HTMLResponse)
 async def serve_blog_index(request: Request):
-    return templates.TemplateResponse("Blog/index.html", {"request": request, "posts": get_all_blogs()})
+    return templates.TemplateResponse(request=request, name="Blog/index.html", context={"request": request, "posts": get_all_blogs()})
 
 @web_app_router.get("/blog/{slug}", response_class=HTMLResponse)
 async def serve_blog_post(request: Request, slug: str):
     post = next((p for p in get_all_blogs() if p["slug"] == slug), None)
     if not post: raise HTTPException(status_code=404, detail="Post not found")
-    return templates.TemplateResponse("Blog/post.html", {"request": request, "post": post})
+    return templates.TemplateResponse(request=request, name="Blog/post.html", context={"request": request, "post": post})
 
 # Chat API
 @web_app_router.post("/web/chat")

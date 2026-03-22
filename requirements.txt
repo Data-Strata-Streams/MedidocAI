@@ -1,6 +1,8 @@
+# Purpose: List of Python dependencies for MedidocAI
 fastapi
 uvicorn
 google-cloud-aiplatform
+google-cloud-texttospeech
 google-auth>=2.23.3
 qdrant-client
 python-dotenv
@@ -9,5 +11,9 @@ python-multipart
 pydantic
 pyyaml
 jinja2
-google-cloud-texttospeech
 markdown2
+
+# Database Dependencies (PostgreSQL)
+sqlalchemy
+asyncpg
+greenlet

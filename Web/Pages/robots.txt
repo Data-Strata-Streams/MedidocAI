@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /*?chat=
+Disallow: /*?query=
+
+Sitemap: https://www.medidocai.com/sitemap.xml
