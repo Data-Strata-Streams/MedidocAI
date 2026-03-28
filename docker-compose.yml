@@ -31,6 +31,11 @@ services:
     container_name: medidoc_db
     ports:
       - "5432:5432"
+    # HARDCODED: This prevents the crash loop
+    environment:
+      POSTGRES_USER: medidoc_admin
+      POSTGRES_PASSWORD: secure_medidoc_pass_123
+      POSTGRES_DB: medidoc_db
     env_file:
       - .env
     volumes:

@@ -1,0 +1,65 @@
+Medidoc Script Documentation
+============================
+This document outlines all the Python script files present in the MedidocAI workspace and describes their primary purpose.
+
+1. config/config.py
+   Purpose: Centralizes environment variable loading for the MedidocAI project, configuring database, GCP, and API credentials.
+
+2. engine/main.py
+   Purpose: The main FastAPI application entry point. It sets up the API routes, handles AI core APIs (like /api/v1/query), and mounts external routers (WhatsApp and Web modules).
+
+3. engine/core/models.py
+   Purpose: Defines the SQL Database Schema for the MedidocAI project using SQLAlchemy (Generics, Brands, ClinicalProfiles).
+
+4. engine/ingestion/migrate_to_sql.py
+   Purpose: A migration script designed to move medicine data from a JSON file (medicine_database.json) and ingest it into the PostgreSQL database.
+
+5. engine/ingestion/qdrant_ingest.py
+   Purpose: Reads processed medicine JSON data, generates vector embeddings using Vertex AI text-embedding models, and ingests them into a Qdrant vector database for semantic search.
+
+6. engine/core/ai_client.py
+   Purpose: Initializes Google Vertex AI, configuring the Gemini 2.5 Flash model for content generation and the text embedding model for Qdrant vectorization.
+
+7. engine/core/generator.py
+   Purpose: Uses Gemini 2.5 Flash to generate persona-based AI responses. It includes robust logic to detect and adapt the response language natively (strictly filtering between English and Urdu).
+
+8. engine/core/audio_handler.py
+   Purpose: Handles transcribing user audio queries into text using Gemini. It enforces strict transcription logic to output transcribed text in either fluent English or Urdu script based on the audio.
+
+9. engine/core/fallback.py
+   Purpose: Provides AI fallback logic. When a medicine isn't naturally found, it asks Gemini to extract the generic name, and also logs permanently missing medicines to a text file for future database additions.
+
+10. engine/core/tts_handler.py
+    Purpose: Cleans text and dynamically generates MP3 audio via Google Cloud Text-to-Speech (TTS). It auto-detects English vs Urdu text to provide the correct voice and accent.
+
+11. engine/core/retrieval.py
+    Purpose: Handles vector similarity searching. It converts user queries into vector embeddings and queries the Qdrant database to retrieve relevant medical contexts.
+
+12. engine/core/vision_handler.py
+    Purpose: Processes incoming images (like prescriptions or medicine boxes) using Gemini 2.5 Flash to strictly extract recognized medicine names as a JSON list for subsequent retrieval.
+
+13. engine/others/whatsapp_webhook.py
+    Purpose: The core webhook endpoint for WhatsApp (via Evolution API). It handles incoming webhooks, processes text/audio/image messages, queries the AI engine with fallback support, and replies accordingly.
+
+14. engine/others/whatsapp_client.py
+    Purpose: Handles calling the Evolution API to send outgoing WhatsApp communications (both text messages and voice notes) and fetching base64 media attached to incoming messages.
+
+15. set_webhook.py
+    Purpose: A utility script to programmatically configure the Evolution API webhook URL to point to the local FastAPI instance's webhook endpoint for handling messages.
+
+16. Web/Engine/Core/web_router.py
+    Purpose: The primary FastAPI router for the web application UI. It serves Jinja2 HTML templates, connects to the relational database to present lists of medicines/manufacturers, handles chat inputs, and generates sitemaps.
+
+17. Web/Engine/Other/generate_sitemaps.py
+    Purpose: An SEO utility script that reads the database JSON file to dynamically extract generics, medicines, and manufacturers to generate precise XML Sitemaps and a robots.txt file.
+
+18. engine/ingestion/populate_medical_dictionary.py
+    Purpose: A utility script to populate the medical dictionary table in the database with medical terms and their definitions. It uses Gemini 2.5 Flash to extract complex medical terms from the database and generate simple definitions for them.
+
+19. engine/core/user_state.py
+    Purpose: Helper functions to manage WhatsApp user onboarding state and personas.
+
+20. engine/ingestion/ingest_medical_dictionary.py
+    Purpose: A utility script to populate the medical dictionary table in the database with medical terms and their definitions. It uses Gemini 2.5 Flash to extract complex medical terms from the database and generate simple definitions for them.
+
+21. 

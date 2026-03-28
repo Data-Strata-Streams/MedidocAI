@@ -1,145 +1,385 @@
-<!-- Purpose: Mobile-Optimized Medicine Detail Page with Responsive Grid and Typography -->
+<!-- Purpose: Mobile-Optimized Medicine Detail Page with Dynamic Medical Term Tooltips (5th-Grade Level) -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- DYNAMIC SEO TITLE -->
     <title>{{ brand_name }} ({{ generic_name }}): Uses, Dosage & Side Effects | MedidocAI</title>
-    
+
     <!-- DYNAMIC SEO DESCRIPTION -->
-    <meta name="description" content="Find comprehensive medical details for {{ brand_name }} ({{ generic_name }}). Learn about its uses, side effects, clinical warnings, and AI-verified generic alternatives.">
-    
+    <meta name="description" content="AI-Assisted {{ brand_name }} Guide: Uses, Dosage, Side Effects & Alternatives">
+    <link rel="canonical" href="https://www.medidocai.com{{ request.url.path }}">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
-        @keyframes bounce-short { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-        .animate-bounce-short { animation: bounce-short 2s ease-in-out infinite; }
-        /* Smooth scrolling for anchor links */
-        html { scroll-behavior: smooth; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .nav-link-active {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+        }
+
+        /* Sticky Nav styles */
+        #sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+        }
+        
+        .dark #sticky-nav {
+            background-color: rgba(15, 23, 42, 0.9);
+        }
+
+        /* Custom details arrow */
+        details summary::-webkit-details-marker { display: none; }
+        details summary::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-left: auto;
+            transition: transform 0.2s;
+        }
+        details[open] summary::after { transform: rotate(180deg); }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen md:p-8 pb-24 font-sans text-gray-800">
 
-    <!-- MAIN CONTAINER: Full width on mobile, Centered Card on Desktop -->
-    <div class="w-full max-w-5xl mx-auto bg-white md:rounded-2xl shadow-sm border-x-0 md:border border-gray-100 overflow-hidden">
-        
-        <!-- HEADER SECTION -->
-        <div class="bg-blue-600 px-6 py-8 md:px-10 md:py-10 text-white relative overflow-hidden">
-            <!-- Background Decoration -->
-            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
-            
-            <a href="/" class="inline-flex items-center text-blue-100 hover:text-white font-semibold mb-6 transition group">
-                <i class="fa-solid fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i> Back to Search
-            </a>
-            
-            <h1 class="text-3xl md:text-5xl font-extrabold mb-3 tracking-tight">{{ brand_name }}</h1>
-            
-            <div class="flex flex-wrap items-center gap-2 text-blue-100 text-sm md:text-base">
-                <span class="opacity-80">Generic Formula:</span>
-                <a href="/generic/{{ generic_name | urlencode }}" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full font-semibold text-white transition backdrop-blur-md border border-white/20">
-                    {{ generic_name }}
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen font-sans transition-colors duration-200">
+
+    <!-- HERO SECTION -->
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 pt-8 pb-6 px-4 md:px-8">
+        <div class="max-w-5xl mx-auto">
+            <nav class="mb-4">
+                <a href="/" class="text-brand-600 dark:text-brand-400 hover:text-brand-700 font-semibold text-sm flex items-center gap-2 transition" aria-label="Back to home">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Search
                 </a>
-            </div>
-        </div>
-
-        <!-- CONTENT BODY -->
-        <div class="px-6 py-8 md:px-10">
+            </nav>
             
-            <!-- CLINICAL PROFILE SECTION (If Available) -->
-            {% if clinical_profile %}
-            <div class="mb-12">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-file-medical-alt"></i>
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ brand_name }}</h1>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold rounded-full border border-green-200 dark:border-green-800" title="Information verified by medical logic">
+                            <i class="fa-solid fa-circle-check"></i> Med-Verified
+                        </span>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-900">Clinical Profile</h2>
-                </div>
-                
-                <div class="grid grid-cols-1 gap-6 bg-slate-50 rounded-2xl p-6 border border-slate-100">
-                    <div class="space-y-2">
-                        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Indications (Uses)</h3>
-                        <p class="text-gray-800 leading-relaxed">{{ clinical_profile.unified_indications }}</p>
-                    </div>
-                    
-                    <div class="border-t border-slate-200 my-2"></div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Mechanism</h3>
-                            <p class="text-gray-800 text-sm leading-relaxed">{{ clinical_profile.unified_mechanism }}</p>
-                        </div>
-                        <div class="space-y-2">
-                            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Common Dosage</h3>
-                            <p class="text-gray-800 text-sm leading-relaxed">{{ clinical_profile.unified_dosage_guidelines }}</p>
-                        </div>
-                    </div>
-
-                    {% if clinical_profile.unified_side_effects %}
-                    <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg mt-2">
-                        <h3 class="text-red-800 font-bold text-sm mb-1 flex items-center gap-2">
-                            <i class="fa-solid fa-triangle-exclamation"></i> Potential Side Effects
-                        </h3>
-                        <p class="text-red-700 text-sm">{{ clinical_profile.unified_side_effects }}</p>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- AVAILABLE BRANDS SECTION -->
-            <div>
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-pills"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-900">Available Brands / Manufacturers</h2>
-                </div>
-
-                <!-- RESPONSIVE GRID: 1 Col Mobile, 2 Cols Desktop -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {% for m in matches %}
-                    <div class="group p-5 bg-white rounded-xl border border-gray-200 hover:border-blue-400 hover:shadow-md transition duration-200 flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between items-start mb-2">
-                                <p class="font-bold text-lg text-gray-900 group-hover:text-blue-700 transition">{{ m.brand.brand_name }}</p>
-                                <span class="bg-gray-100 text-gray-500 text-[10px] px-2 py-1 rounded uppercase font-bold tracking-wide">Brand</span>
-                            </div>
-                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1.5">
-                                <i class="fa-solid fa-industry text-xs"></i>
-                                <a href="/manufacturer/{{ m.brand.manufacturer | urlencode }}" class="hover:text-blue-600 hover:underline transition">
-                                    {{ m.brand.manufacturer }}
-                                </a>
-                            </p>
-                        </div>
-                        <div class="pt-3 border-t border-gray-50 mt-2">
-                            <p class="text-xs text-gray-400 font-mono">{{ m.brand.exact_formula }}</p>
-                        </div>
-                    </div>
-                    {% endfor %}
+                    <p class="text-lg md:text-xl text-slate-500 dark:text-slate-400 font-medium mb-4">
+                        {{ generic_name }}
+                    </p>
                 </div>
             </div>
 
+            <!-- TL;DR Summary Card -->
+            <div class="mt-4 p-4 bg-brand-50 dark:bg-brand-900/20 rounded-2xl border border-brand-100 dark:border-brand-800/50">
+                <div class="flex gap-3">
+                    <div class="bg-brand-500 text-white w-8 h-8 flex items-center justify-center rounded-lg pt-1 shrink-0">
+                        <i class="fa-solid fa-bolt text-sm"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-brand-800 dark:text-brand-300 uppercase tracking-widest mb-1">Quick Summary (TL;DR)</p>
+                        <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+                            {{ brand_name }} is commonly used for {{ clinical_profile.unified_indications | truncate(150) if clinical_profile else 'information not available' }}.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </header>
 
-    <!-- ACCURACY BUBBLE (Mobile: Fixed Bottom Width | Desktop: Fixed Bottom Right) -->
-    <div id="accuracy-disclaimer" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:w-80 bg-white border border-gray-200 p-4 rounded-2xl shadow-2xl z-50 animate-bounce-short">
-        <button onclick="document.getElementById('accuracy-disclaimer').remove()" class="absolute -top-3 -right-3 bg-gray-800 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm shadow-md hover:bg-gray-600 transition cursor-pointer">✕</button>
+    <!-- STICKY SUB-NAV -->
+    <nav id="sticky-nav" class="border-b border-slate-200 dark:border-slate-700 px-4 md:px-8 overflow-x-auto no-scrollbar" aria-label="Page Sections Navigation">
+        <div class="max-w-5xl mx-auto flex gap-6 md:gap-8 min-w-max">
+            <a href="#indications" class="py-4 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-brand-600 transition border-b-2 border-transparent hover:border-brand-600" aria-label="Go to Indications section">Uses</a>
+            <a href="#dosage" class="py-4 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-brand-600 transition border-b-2 border-transparent hover:border-brand-600" aria-label="Go to Dosage section">Dosage</a>
+            <a href="#side-effects" class="py-4 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-brand-600 transition border-b-2 border-transparent hover:border-brand-600" aria-label="Go to Side Effects section">Side Effects</a>
+            <a href="#brands" class="py-4 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-brand-600 transition border-b-2 border-transparent hover:border-brand-600" aria-label="Go to Available Brands section">Alternatives</a>
+        </div>
+    </nav>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="max-w-5xl mx-auto p-4 md:p-8 space-y-8 pb-32">
+
+        <!-- GRID LAYOUT -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Indications Section -->
+            <section id="indications" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center rounded-xl">
+                        <i class="fa-solid fa-stethoscope"></i>
+                    </div>
+                    <h2 class="text-xl font-bold dark:text-white">What it's for (Indications)</h2>
+                </div>
+                <div class="prose dark:prose-invert prose-slate">
+                    <ul class="space-y-3 clinical-text list-none pl-0">
+                        {% if clinical_profile and clinical_profile.unified_indications %}
+                            {% for indication in clinical_profile.unified_indications.split('.') if indication.strip() %}
+                            <li class="flex items-start gap-3">
+                                <i class="fa-solid fa-check-circle text-green-500 mt-1 shrink-0"></i>
+                                <span class="text-slate-600 dark:text-slate-300">{{ indication.strip() }}.</span>
+                            </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="text-slate-500 italic">No information provided.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Dosage Section (Table) -->
+            <section id="dosage" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center rounded-xl">
+                        <i class="fa-solid fa-prescription"></i>
+                    </div>
+                    <h2 class="text-xl font-bold dark:text-white">Dosage Information</h2>
+                </div>
+                <div class="overflow-x-auto rounded-xl border border-slate-100 dark:border-slate-700">
+                    <table class="w-full text-left text-sm" aria-label="Dosage table">
+                        <thead class="bg-slate-50 dark:bg-slate-900">
+                            <tr>
+                                <th class="px-4 py-3 font-bold text-slate-600 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700">Type</th>
+                                <th class="px-4 py-3 font-bold text-slate-600 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700">Guideline</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                            {% if clinical_profile and clinical_profile.unified_dosage_guidelines %}
+                                <tr>
+                                    <td class="px-4 py-4 font-semibold text-slate-900 dark:text-white align-top">Standard</td>
+                                    <td class="px-4 py-4 clinical-text text-slate-600 dark:text-slate-300">{{ clinical_profile.unified_dosage_guidelines }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="2" class="px-4 py-4 text-slate-500 italic">No dosage information found.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Side Effects Section (Two-Column Comparison) -->
+        <section id="side-effects" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 bg-red-50 dark:bg-red-900/40 text-red-600 dark:text-red-400 flex items-center justify-center rounded-xl">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h2 class="text-xl font-bold dark:text-white">Safety & Warnings</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Common Side Effects -->
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-2xl border border-blue-100 dark:border-blue-800/50">
+                    <h3 class="text-lg font-bold text-blue-800 dark:text-blue-300 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check"></i> Common Side Effects
+                    </h3>
+                    <ul class="space-y-2 list-disc pl-5 clinical-text text-blue-700 dark:text-blue-200 text-sm">
+                        {% if clinical_profile and clinical_profile.unified_side_effects %}
+                            {% for effect in clinical_profile.unified_side_effects.split('.') if effect.strip() %}
+                                <li>{{ effect.strip() }}.</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>Information not available.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!-- Serious Warnings -->
+                <div class="bg-red-50 dark:bg-red-900/20 p-6 rounded-2xl border border-red-100 dark:border-red-800/50">
+                    <h3 class="text-lg font-bold text-red-800 dark:text-red-300 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-hand"></i> Serious Warnings
+                    </h3>
+                    <ul class="space-y-2 list-disc pl-5 clinical-text text-red-700 dark:text-red-200 text-sm">
+                        {% if clinical_profile and (clinical_profile.black_box_warning or clinical_profile.unified_warnings_and_precautions) %}
+                            {% if clinical_profile.black_box_warning %}
+                                <li class="font-bold underline uppercase">Black Box Warning: {{ clinical_profile.black_box_warning }}</li>
+                            {% endif %}
+                            {% for warn in clinical_profile.unified_warnings_and_precautions.split('.') if warn.strip() %}
+                                <li>{{ warn.strip() }}.</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>Consult your healthcare provider for serious precautions.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mechanism of Action (Accordion) -->
+        <section class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+            <details class="group">
+                <summary class="flex items-center gap-4 px-6 py-5 md:px-8 md:py-6 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-700/50 transition" aria-label="Toggle Mechanism of Action details">
+                    <div class="w-10 h-10 bg-slate-100 dark:bg-slate-900/60 text-slate-600 dark:text-slate-400 flex items-center justify-center rounded-xl">
+                        <i class="fa-solid fa-dna"></i>
+                    </div>
+                    <span class="text-lg font-bold dark:text-white">How it Works (Mechanism of Action)</span>
+                </summary>
+                <div class="px-6 pb-6 md:px-8 md:pb-8 pt-2">
+                    <div class="bg-slate-50 dark:bg-slate-900/40 p-6 rounded-2xl clinical-text leading-relaxed text-slate-600 dark:text-slate-400 text-sm border border-slate-100 dark:border-slate-700">
+                        {{ clinical_profile.unified_mechanism if clinical_profile else 'Information pending laboratory confirmation.' }}
+                    </div>
+                </div>
+            </details>
+        </section>
+
+        <!-- Available Brands Section -->
+        <section id="brands" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-teal-50 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 flex items-center justify-center rounded-xl">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+                <h2 class="text-xl font-bold dark:text-white">Commercial Brands (Alternatives)</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for m in alternatives %}
+                <a href="/medicine/{{ m.brand.brand_name | urlencode }}" class="group p-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-brand-500 hover:shadow-lg transition-all duration-300">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="font-bold text-slate-900 dark:text-white group-hover:text-brand-600 transition">{{ m.brand.brand_name }}</h3>
+                        <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] px-2 py-0.5 rounded uppercase font-bold tracking-widest">Brand</span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1.5 uppercase tracking-wide">
+                        <i class="fa-solid fa-industry"></i>
+                        {{ m.brand.manufacturer }}
+                    </p>
+                    <div class="mt-4 pt-3 border-t border-slate-50 dark:border-slate-700 text-xs font-mono text-slate-400">
+                        {{ m.brand.exact_formula }}
+                    </div>
+                </a>
+                {% endfor %}
+                {% if alternatives|length == 0 %}
+                <p class="text-slate-500 italic text-sm py-4">No other brands found for this formula.</p>
+                {% endif %}
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ACCURACY BUBBLE -->
+    <div id="accuracy-disclaimer"
+        class="fixed bottom-10 left-4 right-4 md:left-auto md:right-8 md:w-80 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl shadow-2xl z-50 transition-transform duration-500 hover:scale-105">
+        <button onclick="this.parentElement.remove()" class="absolute -top-3 -right-3 bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 rounded-full w-7 h-7 flex items-center justify-center text-sm shadow-md hover:bg-slate-600 transition" aria-label="Close disclaimer">✕</button>
         <div class="flex items-start gap-3">
-            <div class="bg-amber-100 text-amber-600 p-2.5 rounded-xl shrink-0"><i class="fa-solid fa-triangle-exclamation"></i></div>
-            <div class="text-xs leading-relaxed text-gray-600">
-                <p class="font-bold text-gray-900 mb-1">AI Accuracy Note</p>
-                Found an error? Help us improve:
+            <div class="bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 p-2.5 rounded-xl shrink-0"><i
+                    class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="text-[11px] leading-relaxed text-slate-600 dark:text-slate-400">
+                <p class="font-bold text-slate-900 dark:text-white mb-1">AI Safety Note</p>
+                Found an error? Helping us helps everyone:
                 <div class="flex gap-3 mt-2 font-bold">
-                    <a href="mailto:admin@medidocai.com" class="text-blue-600 hover:underline">Email Us</a>
-                    <span class="text-gray-300">|</span>
+                    <a href="mailto:admin@medidocai.com" class="text-brand-600 dark:text-brand-400 hover:underline">Report</a>
+                    <span class="text-slate-300 dark:text-slate-600">|</span>
                     <a href="https://wa.link/kl71v0" target="_blank" class="text-green-600 hover:underline">WhatsApp</a>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- FIXED TRUST DISCLAIMER -->
+    <footer class="fixed bottom-0 left-0 right-0 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-700 py-2.5 px-4 text-center z-40 transition-colors duration-200">
+        <p class="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 max-w-4xl mx-auto leading-tight">
+            MedidocAI is an AI-assisted tool for informational purposes only. This information does not replace professional medical advice. Always consult a physician.
+        </p>
+    </footer>
+
+    <!-- DYNAMIC TOOLTIPS DATA -->
+    <script id="medical-dict-data" type="application/json">
+        {{ medical_dictionary | safe }}
+    </script>
+
+    <script>
+        // NAVIGATION INTERACTION
+        const navLinks = document.querySelectorAll('#sticky-nav a');
+        const observerOptions = { root: null, rootMargin: '-10% 0px -80% 0px', threshold: 0 };
+        
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('nav-link-active');
+                        if (link.getAttribute('href').substring(1) === entry.target.id) {
+                            link.classList.add('nav-link-active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section[id]').forEach(section => observer.observe(section));
+
+        // MEDICAL DICTIONARY TOOLTIPS
+        document.addEventListener("DOMContentLoaded", function() {
+            const dictElement = document.getElementById('medical-dict-data');
+            if (!dictElement) return;
+            
+            let medicalDictionary;
+            try {
+                medicalDictionary = JSON.parse(dictElement.textContent);
+                console.log(`Medical Dictionary loaded: ${Object.keys(medicalDictionary).length} terms.`);
+            } catch (e) { 
+                console.error("Failed to parse medical dictionary JSON", e);
+                return; 
+            }
+
+            const clinicalTexts = document.querySelectorAll('.clinical-text');
+            const terms = Object.keys(medicalDictionary).sort((a, b) => b.length - a.length);
+            
+            if (terms.length === 0) return;
+
+            // Helper to escape regex special chars
+            const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+            clinicalTexts.forEach(container => {
+                let htmlContent = container.innerHTML;
+                let matchCount = 0;
+
+                terms.forEach(term => {
+                    if (term.length < 3) return; // Skip too short terms to avoid false positives
+
+                    // Regex: Match word boundary + term + word boundary
+                    // Negative lookahead (?![^<]*>) ensures we don't match inside HTML tags
+                    // and specifically avoids items already wrapped in our span class
+                    const escapedTerm = escapeRegExp(term);
+                    const regex = new RegExp(`\\b(${escapedTerm})\\b(?![^<]*>)(?![^<]*class="[^"]*group\\/tooltip)`, 'gi');
+                    
+                    if (regex.test(htmlContent)) {
+                        htmlContent = htmlContent.replace(regex, (match) => {
+                            matchCount++;
+                            const definition = medicalDictionary[term.toLowerCase()];
+                            return `<span class="relative group/tooltip inline-block border-b border-dotted border-brand-400 text-brand-700 dark:text-brand-400 cursor-help font-medium">${match}<span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-slate-900 dark:bg-slate-200 text-white dark:text-slate-900 text-xs font-normal rounded-xl shadow-2xl opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 pointer-events-none z-50 text-center leading-relaxed"><span class="block font-bold mb-1 border-b border-white/20 dark:border-slate-900/20 pb-1 text-[9px] uppercase tracking-widest text-brand-300 dark:text-brand-600">Verified Definition</span>${definition}<span class="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900 dark:border-t-slate-200"></span></span></span>`;
+                        });
+                    }
+                });
+                
+                if (matchCount > 0) {
+                    container.innerHTML = htmlContent;
+                    console.log(`Injected ${matchCount} tooltips into container.`);
+                }
+            });
+        });
+    </script>
 </body>
+
 </html>

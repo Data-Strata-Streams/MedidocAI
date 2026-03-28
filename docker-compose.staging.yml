@@ -4,12 +4,42 @@ services:
   medidoc_api_staging:
     build: .
     container_name: medidoc_api_staging
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     ports:
       - "8001:8000"
     volumes:
       - .:/app
-      # This line tells the container: use the 'data_staging' folder instead of the live 'data' folder
       - ./Web/Pages/Blog/data_staging:/app/Web/Pages/Blog/data
     env_file:
       - .env
+    environment:
+      POSTGRES_HOST: db_staging
+      POSTGRES_PORT: 5432
+      QDRANT_HOST: 172.17.0.1
+    depends_on:
+      - db_staging
+    restart: unless-stopped
+
+  db_staging:
+    image: postgres:15-alpine
+    container_name: medidoc_db_staging
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: medidoc_admin
+      POSTGRES_DB: medidoc_db
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - ./data_staging/postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  adminer_staging:
+    image: adminer
+    container_name: medidoc_adminer_staging
+    ports:
+      - "8082:8080"
+    depends_on:
+      - db_staging
     restart: unless-stopped

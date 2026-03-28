@@ -17,3 +17,6 @@ markdown2
 sqlalchemy
 asyncpg
 greenlet
+# For local development
+psycopg2-binary
+watchdog

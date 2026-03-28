@@ -1,10 +1,51 @@
-# Purpose: Handle outgoing communications (text/audio) and fetch media from WhatsApp via the Evolution API.
-
+# Purpose: Handle outgoing communications (text/audio/list) via Evolution API.
 import requests
 import logging
 from config.config import settings
 
 logger = logging.getLogger(__name__)
+
+def send_whatsapp_list(remote_jid, text, list_title, list_button_text, list_sections):
+    """
+    Sends an interactive List menu via Evolution API, matching the required schema.
+    """
+    url = f"{settings.EVOLUTION_API_URL}/message/sendList/{settings.EVOLUTION_INSTANCE_NAME}"
+    headers = {"apikey": settings.EVOLUTION_API_KEY, "Content-Type": "application/json"}
+    
+    payload = {
+        "number": remote_jid.split("@")[0],
+        "title": list_title,
+        "text": text,
+        "footerText": "MedidocAI",       # Added based on error
+        "buttonText": list_button_text,
+        "sections": list_sections        # Changed 'list' to 'sections' based on error
+    }
+    
+    response = requests.post(url, json=payload, headers=headers)
+    print(f"DEBUG: Status={response.status_code} | Body={response.text}", flush=True)
+    return response.status_code == 200
+
+def send_whatsapp_poll(remote_jid: str, name: str, options: list) -> bool:
+    """Sends an interactive Poll (works native on all WhatsApp numbers). options is a list of strings."""
+    url = f"{settings.EVOLUTION_API_URL}/message/sendPoll/{settings.EVOLUTION_INSTANCE_NAME}"
+    headers = {"apikey": settings.EVOLUTION_API_KEY, "Content-Type": "application/json"}
+    
+    payload = {
+        "number": remote_jid.split("@")[0],
+        "name": name,
+        "values": options,
+        "selectableCount": 1
+    }
+    
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+        return True
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Failed to send Poll: {str(e)}")
+        if e.response is not None:
+            logger.error(f"Evolution API Response: {e.response.text}")
+        return False
 
 def send_whatsapp_text(remote_jid: str, text: str) -> bool:
     """Sends a text message to a specific WhatsApp number."""
